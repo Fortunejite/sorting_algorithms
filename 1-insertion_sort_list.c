@@ -1,41 +1,35 @@
 #include "sort.h"
 
-listint_t *swap_node_insert(listint_t *tmp)
-{
-	listint_t *pre;
-
-	pre = tmp->next;
-	tmp->next = pre->next;
-	pre->prev = tmp->prev;
-	pre->next = tmp;
-	tmp->prev = pre;
-	return (pre);
-
-}
+/*
+ *
+ */
 
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *tmp_l;
-	listint_t *lis = *list;
-
-	while (list != NULL)
+	listint_t *focus, *prev, *tmp;
+	
+	if (list == NULL || *list == NULL || (*list)->next == NULL)
+		return;
+	focus = (*list)->next;
+	while (focus != NULL)
 	{
-		if (list == NULL)
-			continue;
-		if (lis->n > lis->next->n)
+		prev = focus->prev;
+		tmp = focus->next;
+		while (prev != NULL && focus->n < prev->n)
 		{
-			tmp_l = swap_node_insert(lis);
-			print_list(lis);
-			while (tmp_l != NULL)
-			{
-				if (tmp_l->n < tmp_l->prev->n)
-				{
-					swap_node_insert(tmp_l);
-					print_list(lis);
-					tmp_l = tmp_l->prev;
-				}
-			}
+			prev->next = focus->next;
+			if (focus->next != NULL)
+				focus->next->prev = prev;
+			focus->next = prev->prev;
+			focus->prev = prev;
+			if (prev->prev != NULL)
+				prev->prev->next = focus;
+			else
+				*list = focus;
+			prev->prev = focus;
+			prev = focus->prev;
+			print_list((const listint_t *)*list);
 		}
-		lis = lis->next;
+		focus = tmp;
 	}
 }
